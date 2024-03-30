@@ -1,0 +1,125 @@
+<?xml version="1.0" ?>
+<robot name="unity_wheeltec_ackermann">
+  <!-- Robot Base -->
+  <link name="unity_base_link">
+    <visual>
+      <geometry>
+        <box size="0.762 0.35 0.15"/>
+      </geometry>
+      <material name="Gray">
+        <color rgba="0.5 0.5 0.5 1.0"/>
+      </material>
+    </visual>
+  </link>
+  <!-- Robot Footprint -->
+  <link name="unity_base_footprint"/>
+  <joint name="unity_base_joint" type="fixed">
+    <parent link="unity_base_link"/>
+    <child link="unity_base_footprint"/>
+    <origin rpy="0 0 0" xyz="0.0 0.0 -0.19"/>
+  </joint>
+  <link name="unity_flwheel_link">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.12" radius="0.12"/>
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="unity_flwheel_joint" type="fixed">
+    <parent link="unity_base_link"/>
+    <child link="unity_flwheel_link"/>
+    <origin rpy="0 0 0" xyz="0.275 0.295 -0.07"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <link name="unity_frwheel_link">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.12" radius="0.12"/>
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="unity_frwheel_joint" type="fixed">
+    <parent link="unity_base_link"/>
+    <child link="unity_frwheel_link"/>
+    <origin rpy="0 0 0" xyz="0.275 -0.295 -0.07"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <link name="unity_rlwheel_link">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.12" radius="0.12"/>
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="unity_rlwheel_joint" type="fixed">
+    <parent link="unity_base_link"/>
+    <child link="unity_rlwheel_link"/>
+    <origin rpy="0 0 0" xyz="-0.255 0.295 -0.07"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <link name="unity_rrwheel_link">
+    <visual>
+      <origin rpy="1.5707963267948966 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.12" radius="0.12"/>
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1.0"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="unity_rrwheel_joint" type="fixed">
+    <parent link="unity_base_link"/>
+    <child link="unity_rrwheel_link"/>
+    <origin rpy="0 0 0" xyz="-0.255 -0.295 -0.07"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+  <!-- Robot Lidar -->
+  <joint name="unity_laser_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.265 0.0 0.16"/>
+    <parent link="unity_base_link"/>
+    <child link="unity_laser_link"/>
+    <axis xyz="0 0 0"/>
+  </joint>
+  <link name="unity_laser_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.02" radius="0.035"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+  </link>
+  <!-- Robot Camera -->
+  <joint name="unity_camera_joint" type="fixed">
+    <origin rpy="0 0 0" xyz="0.265 0.0 0.16"/>
+    <parent link="unity_base_link"/>
+    <child link="unity_camera_link"/>
+    <axis xyz="0 0 0"/>
+  </joint>
+  <link name="unity_camera_link">
+    <visual>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>
+        <box size="0.01 0.01 0.01"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+  </link>
+</robot>
