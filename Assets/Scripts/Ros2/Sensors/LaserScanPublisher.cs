@@ -1,14 +1,11 @@
-using System.Collections.Generic;
+using ROS2;
 using UnityEngine;
-using Unity.Robotics.Core;
-using Unity.Robotics.ROSTCPConnector;
-using RosMessageTypes.Std;
-using RosMessageTypes.Sensor;
-using RosMessageTypes.BuiltinInterfaces;
+using System.Collections.Generic;
 
 // Code based on https://github.com/Unity-Technologies/Robotics-Nav2-SLAM-Example/blob/main/Nav2SLAMExampleProject/Assets/Scripts/LaserScanSensor.cs
 public class LaserScanPublisher : MonoBehaviour{
     [Header("LaserScan Settings")]
+    [SerializeField] private string nodeName = "LaserScanPub_Unity";
     [SerializeField] private string topicName = "scan";
     [SerializeField] private string frameIdName = "laser_link";
 
@@ -26,7 +23,9 @@ public class LaserScanPublisher : MonoBehaviour{
     [SerializeField] private int numMeasurementsPerScan = 180;
     [SerializeField] private float timeBetweenMeasurementsSeconds = 0f;
     
-    private ROSConnection ros;
+    private ROS2UnityComponent ros2Unity;
+    private ROS2Node ros2Node;
+    private IPublisher<sensor_msgs.msg.LaserScan> pub;
     private float currentScanAngleStart;
     private float currentScanAngleEnd;
     private double timeNextScanSeconds = -1;
@@ -36,21 +35,25 @@ public class LaserScanPublisher : MonoBehaviour{
     private double timeLastScanBeganSeconds = -1;
 
     private void Start(){
-        ros = ROSConnection.GetOrCreateInstance();
-        ros.RegisterPublisher<LaserScanMsg>(topicName);
-        
-        timeNextScanSeconds = Clock.Now + 1/publisherFrequency;
-        
+        ros2Unity = GetComponent<ROS2UnityComponent>();
         currentScanAngleStart = scanAngleStartDegrees;
         currentScanAngleEnd = scanAngleEndDegrees;
     }
 
     private void Update(){
+        if(!ros2Unity.Ok()) return;
+        if(ros2Node == null){
+            ros2Node = ros2Unity.CreateNode(nodeName);
+            pub = ros2Node.CreatePublisher<sensor_msgs.msg.LaserScan>(topicName);
+
+            timeNextScanSeconds = Ros2Clock.Now + 1/publisherFrequency;
+        }
+        
         if (!isScanning){
-            if (Clock.NowTimeInSeconds < timeNextScanSeconds) return;
+            if (Ros2Clock.NowTimeInSeconds < timeNextScanSeconds) return;
             BeginScan();
         }
-        var measurementsSoFar = timeBetweenMeasurementsSeconds == 0 ? numMeasurementsPerScan : 1 + Mathf.FloorToInt((float)(Clock.time - timeLastScanBeganSeconds) / timeBetweenMeasurementsSeconds);
+        var measurementsSoFar = timeBetweenMeasurementsSeconds == 0 ? numMeasurementsPerScan : 1 + Mathf.FloorToInt((float)(Ros2Clock.time - timeLastScanBeganSeconds) / timeBetweenMeasurementsSeconds);
         if (measurementsSoFar > numMeasurementsPerScan)
             measurementsSoFar = numMeasurementsPerScan;
 
@@ -86,7 +89,7 @@ public class LaserScanPublisher : MonoBehaviour{
 
     private void BeginScan(){
         isScanning = true;
-        timeLastScanBeganSeconds = Clock.Now;
+        timeLastScanBeganSeconds = Ros2Clock.Now;
         timeNextScanSeconds = timeLastScanBeganSeconds + 1/publisherFrequency;
         numMeasurementsTaken = 0;
     }
@@ -100,7 +103,7 @@ public class LaserScanPublisher : MonoBehaviour{
                              $"and recorded {ranges.Count} ranges.");
         }
 
-        var timestamp = new TimeStamp(Clock.time);
+        var timestamp = new TimeStamp(Ros2Clock.time);
         // Invert the angle ranges when going from Unity to ROS
         var angleStartRos = -currentScanAngleStart * Mathf.Deg2Rad;
         var angleEndRos = -currentScanAngleEnd * Mathf.Deg2Rad;
@@ -112,31 +115,31 @@ public class LaserScanPublisher : MonoBehaviour{
             ranges.Reverse();
         }
 
-        var msg = new LaserScanMsg{
-            header = new HeaderMsg{
-                frame_id = frameIdName,
-                stamp = new TimeMsg{
-                    sec = timestamp.Seconds,
-                    nanosec = timestamp.NanoSeconds,
+        var msg = new sensor_msgs.msg.LaserScan{
+            Header = new std_msgs.msg.Header{
+                Frame_id = frameIdName,
+                Stamp = new builtin_interfaces.msg.Time{
+                    Sec = timestamp.Seconds,
+                    Nanosec = timestamp.NanoSeconds,
                 }
             },
-            range_min = rangeMetersMin,
-            range_max = rangeMetersMax,
-            angle_min = angleStartRos,
-            angle_max = angleEndRos,
-            angle_increment = (angleEndRos - angleStartRos) / numMeasurementsPerScan,
-            time_increment = timeBetweenMeasurementsSeconds,
-            scan_time = 1/publisherFrequency,
-            intensities = new float[ranges.Count],
-            ranges = ranges.ToArray(),
+            Range_min = rangeMetersMin,
+            Range_max = rangeMetersMax,
+            Angle_min = angleStartRos,
+            Angle_max = angleEndRos,
+            Angle_increment = (angleEndRos - angleStartRos) / numMeasurementsPerScan,
+            Time_increment = timeBetweenMeasurementsSeconds,
+            Scan_time = 1/publisherFrequency,
+            Intensities = new float[ranges.Count],
+            Ranges = ranges.ToArray(),
         };
         
-        ros.Publish(topicName, msg);
+        pub.Publish(msg);
 
         numMeasurementsTaken = 0;
         ranges.Clear();
         isScanning = false;
-        var now = (float)Clock.time;
+        var now = (float)Ros2Clock.time;
         if (now > timeNextScanSeconds){
             Debug.LogWarning($"Failed to complete scan started at {timeLastScanBeganSeconds:F} before next scan was " +
                              $"scheduled to start: {timeNextScanSeconds:F}, rescheduling to now ({now:F})");

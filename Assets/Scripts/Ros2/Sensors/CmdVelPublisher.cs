@@ -1,10 +1,9 @@
+using ROS2;
 using UnityEngine;
-using Unity.Robotics.Core;
-using Unity.Robotics.ROSTCPConnector;
-using RosMessageTypes.Geometry;
 
 public class CmdVelPublisher : MonoBehaviour{
     [Header("CmdVel Settings")]
+    [SerializeField] private string nodeName = "CmdVelPub_Unity";
     [SerializeField] private string topicName = "cmd_vel";
 
     [Header("CmdVel Dependencies")]
@@ -13,30 +12,38 @@ public class CmdVelPublisher : MonoBehaviour{
     [Header("Cmdvel Parameters")]
     [SerializeField] private float publisherFrequency = 10f;
 
-    private ROSConnection ros;
-    private double timeNextCmdVelSeconds = -1;
+    private ROS2UnityComponent ros2Unity;
+    private ROS2Node ros2Node;
+    private IPublisher<geometry_msgs.msg.Twist> pub;
+    private double timeNextPublishInSeconds;
 
     private void Start(){
-        ros = ROSConnection.GetOrCreateInstance();
-        ros.RegisterPublisher<TwistMsg>(topicName);
-        
-        timeNextCmdVelSeconds = Clock.Now + 1/publisherFrequency;
+        ros2Unity = GetComponent<ROS2UnityComponent>();
     }
 
     private void Update(){
-        if (Clock.NowTimeInSeconds < timeNextCmdVelSeconds) return;
-        var msg = new TwistMsg{
-            linear = new Vector3Msg{
-                x = ackermannMid.Throttle,
-                y = 0f,
-                z = 0f
+        if(!ros2Unity.Ok()) return;
+        if(ros2Node == null){
+            ros2Node = ros2Unity.CreateNode(nodeName);
+            pub = ros2Node.CreatePublisher<geometry_msgs.msg.Twist>(topicName);
+
+            timeNextPublishInSeconds = Ros2Clock.Now + 1/publisherFrequency;
+        }
+
+        if (Ros2Clock.NowTimeInSeconds < timeNextPublishInSeconds) return;
+        var msg = new geometry_msgs.msg.Twist{
+            Linear = new geometry_msgs.msg.Vector3{
+                X = ackermannMid.Throttle,
+                Y = 0f,
+                Z = 0f
             },
-            angular = new Vector3Msg{
-                x = 0f,
-                y = 0f,
-                z = ackermannMid.Steer
+            Angular = new geometry_msgs.msg.Vector3{
+                X = 0f,
+                Y = 0f,
+                Z = ackermannMid.Steer
             }
         };
-        ros.Publish(topicName, msg);
+        pub.Publish(msg);
+        timeNextPublishInSeconds = Ros2Clock.Now + 1/publisherFrequency;
     }
 }

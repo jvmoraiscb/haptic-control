@@ -1,40 +1,51 @@
+using ROS2;
 using UnityEngine;
-using Unity.Robotics.ROSTCPConnector;
-using RosMessageTypes.Sensor;
 
 // Code based on https://github.com/Unity-Technologies/ROS-TCP-Connector/blob/main/com.unity.robotics.visualizations/Runtime/DefaultVisualizers/Sensor/ScriptableObjects/LaserScanVisualizerSettings.cs
 public class LaserScanSubscriber : MonoBehaviour{
-    [Header("Scan Settings")]
-    [SerializeField] private bool isEnabled = true;
+    [Header("LaserScan Settings")]
+    [SerializeField] private string nodeName = "LaserScanSub_Unity";
     [SerializeField] private string topicName = "scan";
     
-    [Header("Scan Dependencies")]
+    [Header("LaserScan Dependencies")]
     [SerializeField] private Transform lidarPose;
     [SerializeField] private GameObject wallPrefab;
 
-    private ROSConnection ros;
+    private ROS2UnityComponent ros2Unity;
+    private ROS2Node ros2Node;
+    private ISubscription<sensor_msgs.msg.LaserScan> sub;
     private System.Collections.Generic.List<GameObject> walls;
+    private sensor_msgs.msg.LaserScan msg;
 
     private void Start(){
-        ros = ROSConnection.GetOrCreateInstance();
-        ros.Subscribe<LaserScanMsg>(topicName, LaserScanCallback);
-        
+        ros2Unity = GetComponent<ROS2UnityComponent>();
         walls = new System.Collections.Generic.List<GameObject>();
     }
 
-    private void LaserScanCallback(LaserScanMsg msg){
-        if (!isEnabled) return;
-        foreach (GameObject wall in walls){
-            Destroy(wall);
+    private void Update(){
+        if(!ros2Unity.Ok()) return;
+        if(ros2Node == null){
+            ros2Node = ros2Unity.CreateNode(nodeName);
+            sub = ros2Node.CreateSubscription<sensor_msgs.msg.LaserScan>(topicName, msg => LaserScanCallback(msg));
         }
-        walls.Clear();
-        // negate the angle because ROS coordinates are right-handed, unity coordinates are left-handed
-        float angle = -msg.angle_min;
-        for (int i = 0; i < msg.ranges.Length; i++){
-            // create a point and move it relative to the position and rotation of the lidar
-            Vector3 point = Quaternion.Euler(0, lidarPose.eulerAngles.y + Mathf.Rad2Deg * angle, 0) * Vector3.forward * msg.ranges[i] + lidarPose.position;
-            walls.Add(Instantiate(wallPrefab, point, new Quaternion(0, 0, 0, 1)));
-            angle -= msg.angle_increment;
+        
+        if(msg != null){
+            foreach (GameObject wall in walls){
+                Destroy(wall);
+            }
+            walls.Clear();
+            // negate the angle because ROS coordinates are right-handed, unity coordinates are left-handed
+            float angle = -msg.Angle_min;
+            for (int i = 0; i < msg.Ranges.Length; i++){
+                // create a point and move it relative to the position and rotation of the lidar
+                Vector3 point = Quaternion.Euler(0, lidarPose.eulerAngles.y + Mathf.Rad2Deg * angle, 0) * Vector3.forward * msg.Ranges[i] + lidarPose.position;
+                walls.Add(Instantiate(wallPrefab, point, new Quaternion(0, 0, 0, 1)));
+                angle -= msg.Angle_increment;
+            }
         }
+    }
+
+    private void LaserScanCallback(sensor_msgs.msg.LaserScan msg){
+        this.msg = msg;
     }
 }
