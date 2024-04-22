@@ -93,7 +93,7 @@ cd ~/rhcr_ws/src
 git clone -b ros-packages --recurse-submodules https://github.com/jvmoraiscb/rhcr.git .
 ```
 
--   Install ros2-falcon (libnifalcon) drivers:
+-   Install ros2-falcon drivers:
 
 ```bash
 cd ~/rhcr_ws/src/ros2-falcon/libnifalcon
@@ -112,10 +112,14 @@ colcon build
 
 _Recommended version:_ **_Windows 11_**
 
-#### 2.2.1. Install Git:
+#### 2.2.1. Install ROS 2 Humble:
 
--   Visit [git-scm.com/downloads](https://git-scm.com/downloads), download **64-bit Git for Windows Setup** and install it.
--   Restart the computer.
+-   Visit [docs.ros.org/en/humble](https://docs.ros.org/en/humble/Installation/Windows-Install-Binary.html) and follow the instructions (if the link is no longer available, this repository has a copy of the installation guide [here](https://github.com/jvmoraiscb/rhcr/blob/unity-project/Documentation/ros2-humble-windows.md)).
+-   Open a PowerShell terminal with administrator privileges and unblock the startup script:
+
+```ps1
+Set-ExecutionPolicy Unrestricted ; Unblock-File C:\ros2-windows\local_setup.ps1
+```
 
 #### 2.2.2. Install Oculus Software:
 
@@ -128,13 +132,15 @@ _Recommended version:_ **_Windows 11_**
 
 -   Visit [unity.com/download](https://unity.com/download), download and install **Unity Hub**.
 -   Visit [unity.com/releases/editor/archive](https://unity.com/releases/editor/archive) and find **Unity 2020.3.29** version, then click the Unity Hub button and proceed to install the editor.
--   Choose a folder and clone the **unity-project** there:
+-   Choose a folder and clone **this branch** there.
 
-```bash
-git clone -b unity-project https://github.com/jvmoraiscb/rhcr.git
+#### 2.2.4 Set the ROS domain ID that you will use across all packages:
+
+-   Open a PowerShell terminal with administrator privileges and set as a global environment variable:
+
+```ps1
+setx /m ROS_DOMAIN_ID 42
 ```
-
--   Add the project to Unity Hub.
 
 ## 3. Running RHCR:
 
@@ -145,14 +151,14 @@ _Before running the project, it's a good idea to check that both computers are "
 -   Disconnect **Novint Falcon** from host and connect to virtual machine (virtual machines only):
     ![falcon-vmware](/Documentation/images/falcon-vmware.png)
 
--   Open a terminal, source rhcr workspace, set a domain id and run ros2-falcon (follow the terminal instructions to calibrate the controller):
+-   Open a terminal, source rhcr workspace, set the domain id to the same one used previously and run ros2-falcon (follow the terminal instructions to calibrate the controller):
 
 ```bash
 source ~/rhcr_ws/install/setup.bash
 ROS_DOMAIN_ID=42 ros2 run ros2-falcon main
 ```
 
--   Open another terminal, source rhcr workspace, set a domain id and launch rhcr:
+-   Open another terminal, source rhcr workspace, set the domain id to the same one used previously and launch rhcr:
 
 ```bash
 source ~/rhcr_ws/install/setup.bash
@@ -181,16 +187,20 @@ ROS_DOMAIN_ID=42 ros2 launch rhcr start.launch.py
 
     ![wheeltec-ssh](/Documentation/images/wheeltec-ssh.jpg)
 
--   Set a domain id and launch the robot's default package:
+-   Set the domain id to the same one used previously and launch the robot's default package:
 
 ```bash
-ROS_DOMAIN_ID=42 ros2 launch <robot_package> <robot_package_file>
+ROS_DOMAIN_ID=42 ros2 launch robot_package robot_package.launch.py
 ```
 
-_Replace **<robot_package>** for the robot ros2 package name, and **<robot_package_file>** for the launch file name._
+_Replace **robot_package** for the robot ros2 package name, and **robot_package.launch.py** for the launch file name._
 
-#### 3.2.3. Configuring and running the unity project:
+#### 3.2.3. Running the unity project:
 
--   Open RHCR project using Unity Hub and load Main or Mockup scene.
--   Go to **RemoteHapticControlRobot -> ROS2 -> Connector** and enter the IP address of the Linux environment in the **Ros IP Address** field.
-    ![unity-config](/Documentation/images/unity-config.jpg)
+-   Open a PowerShell terminal, run ros2 startup script and open the project with all variables loaded.
+
+```ps1
+C:\ros2-windows\local_setup.ps1 ; Start-Process -FilePath '<path\to\Unity.exe>' -ArgumentList '-projectPath "<path\to\unity-project\>"'
+```
+
+_Replace **<path\to\Unity.exe>** for the path to the Unity executable, and **<path\to\unity-project\>** for the path to the project folder._
