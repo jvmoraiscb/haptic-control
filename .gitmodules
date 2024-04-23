@@ -1,7 +1,0 @@
-[submodule "ros2-falcon"]
-	path = ros2-falcon
-	url = https://github.com/jvmoraiscb/ros2-falcon.git
-[submodule "ROS-TCP-Endpoint"]
-	path = ROS-TCP-Endpoint
-	url = https://github.com/Unity-Technologies/ROS-TCP-Endpoint.git
-	branch = main-ros2
