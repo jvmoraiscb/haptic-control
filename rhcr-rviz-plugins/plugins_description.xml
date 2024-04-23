@@ -1,19 +1,19 @@
-<library path="rhcr-rviz-plugins">
+<library path="rhcr_rviz_plugins">
 
-  <class name="rhcr-rviz-plugins/CreateObjectTool"
-         type="rhcr-rviz-plugins::CreateObjectTool"
+  <class name="rhcr_rviz_plugins/CreateObjectTool"
+         type="rhcr_rviz_plugins::CreateObjectTool"
          base_class_type="rviz_common::Tool">
     <description>TODO</description>
   </class>
 
-  <class name="rhcr-rviz-plugins/DeleteObjectTool"
-         type="rhcr-rviz-plugins::DeleteObjectTool"
+  <class name="rhcr_rviz_plugins/DeleteObjectTool"
+         type="rhcr_rviz_plugins::DeleteObjectTool"
          base_class_type="rviz_common::Tool">
     <description>TODO</description>
   </class>
 
-  <class name="rhcr-rviz-plugins/DeleteAllObjectsTool"
-         type="rhcr-rviz-plugins::DeleteAllObjectsTool"
+  <class name="rhcr_rviz_plugins/DeleteAllObjectsTool"
+         type="rhcr_rviz_plugins::DeleteAllObjectsTool"
          base_class_type="rviz_common::Tool">
     <description>TODO</description>
   </class>

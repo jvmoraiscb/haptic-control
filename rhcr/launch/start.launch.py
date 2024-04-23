@@ -8,12 +8,7 @@ def generate_launch_description():
     model_path = os.path.join(my_pkg_share, 'src/description/unity_ackermann_description.urdf')
     slam_config_path = os.path.join(my_pkg_share, 'config/slam.config.yaml')
     rviz_config_path = os.path.join(my_pkg_share, 'config/slam.config.rviz')
-    ros_tcp_endpoint_pkg_share = launch_ros.substitutions.FindPackageShare(package='ros_tcp_endpoint').find('ros_tcp_endpoint')
-    ros_tcp_endpoint_launch_path = os.path.join(ros_tcp_endpoint_pkg_share, 'launch/endpoint.py')
 
-    ros_tcp_endpoint_launch = launch.actions.IncludeLaunchDescription(
-    	launch.launch_description_sources.PythonLaunchDescriptionSource(ros_tcp_endpoint_launch_path)
-    )
     robot_state_publisher_node = launch_ros.actions.Node(
         package='robot_state_publisher',
         executable='robot_state_publisher',
@@ -57,7 +52,6 @@ def generate_launch_description():
     )
 
     return launch.LaunchDescription([
-		ros_tcp_endpoint_launch,
         joint_state_publisher_node,
         robot_state_publisher_node,
         ackermann_node,

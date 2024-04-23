@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-    <name>rhcr-slam-nav2</name>
+    <name>rhcr</name>
     <version>1.0.0</version>
-    <description>RHCR SLAM and Nav2 Package</description>
+    <description>RHCR Package</description>
     <maintainer email="jv.moraiscb@gmail.com">jvmoraiscb</maintainer>
     <license>MIT</license>
 

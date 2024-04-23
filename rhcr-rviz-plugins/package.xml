@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-  <name>rhcr-rviz-plugins</name>
+  <name>rhcr_rviz_plugins</name>
   <version>1.2.0</version>
-  <description>RHCR plugins for rviz</description>
+  <description>Navigation 2 plugins for rviz</description>
   <maintainer email="michael.jeronimo@intel.com">Michael Jeronimo</maintainer>
   <license>Apache-2.0</license>
 
