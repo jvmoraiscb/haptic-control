@@ -85,11 +85,12 @@ rosdep update
 
 #### 2.1.3 Creating and populating the rhcr workspace:
 
--   Create a workspace and clone the **ros-packages** there:
+-   Create a workspace, install git and clone the **ros-packages** there:
 
 ```bash
 mkdir -p ~/rhcr_ws/src
 cd ~/rhcr_ws/src
+sudo apt install git -y
 git clone -b ros-packages --recurse-submodules https://github.com/jvmoraiscb/rhcr.git .
 ```
 
@@ -104,7 +105,7 @@ cd ~/rhcr_ws/src/ros2-falcon/libnifalcon
 
 ```bash
 cd ~/rhcr_ws
-rosdep install --from-paths src -y --ignore-src
+rosdep install -i --from-path src --rosdistro humble -y
 colcon build
 ```
 
