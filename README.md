@@ -104,6 +104,7 @@ cd ~/rhcr_ws/src/ros2-falcon/libnifalcon
 -   Install packages depencies and build the colcon workspace:
 
 ```bash
+source /opt/ros/humble/setup.bash
 cd ~/rhcr_ws
 rosdep install -i --from-path src --rosdistro humble -y
 colcon build
