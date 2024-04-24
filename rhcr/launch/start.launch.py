@@ -3,7 +3,7 @@ import launch_ros
 import os
 
 def generate_launch_description():
-    package_name = 'rhcr-slam-nav2'
+    package_name = 'rhcr'
     my_pkg_share = launch_ros.substitutions.FindPackageShare(package=package_name).find(package_name)
     model_path = os.path.join(my_pkg_share, 'src/description/unity_ackermann_description.urdf')
     slam_config_path = os.path.join(my_pkg_share, 'config/slam.config.yaml')
