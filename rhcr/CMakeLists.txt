@@ -20,6 +20,10 @@ add_executable(
     minimap_publisher
     src/minimap_publisher.cpp
 )
+add_executable(
+    sliced_map_publisher
+    src/sliced_map_publisher.cpp
+)
 
 ament_target_dependencies(
     ackermann_tf2_broadcaster
@@ -35,11 +39,17 @@ ament_target_dependencies(
     geometry_msgs
     rclcpp
 )
+ament_target_dependencies(
+    sliced_map_publisher
+    nav_msgs
+    rclcpp
+)
 
 install(
   TARGETS
   ackermann_tf2_broadcaster
   minimap_publisher
+  sliced_map_publisher
   DESTINATION lib/${PROJECT_NAME}
 )
 
