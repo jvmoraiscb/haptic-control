@@ -39,10 +39,10 @@ public class FalconNode : MonoBehaviour{
         ros2Node ??= ros2Unity.CreateNode(nodeName);
         if (ros2Unity.Ok()){
             ros2Node.CreateSubscription<geometry_msgs.msg.Vector3>(positionTopicName, msg => PositionHandler(msg.X, msg.Y, msg.Z));
-            ros2Node.CreateSubscription<std_msgs.msg.Int16>(rightButtonTopicName, msg => ButtonHandler(RIGHT, msg.Data));
-            ros2Node.CreateSubscription<std_msgs.msg.Int16>(upButtonTopicName, msg => ButtonHandler(UP, msg.Data));
-            ros2Node.CreateSubscription<std_msgs.msg.Int16>(centerButtonTopicName, msg => ButtonHandler(CENTER, msg.Data));
-            ros2Node.CreateSubscription<std_msgs.msg.Int16>(leftButtonTopicName, msg => ButtonHandler(LEFT, msg.Data));
+            ros2Node.CreateSubscription<std_msgs.msg.Bool>(rightButtonTopicName, msg => ButtonHandler(RIGHT, msg.Data));
+            ros2Node.CreateSubscription<std_msgs.msg.Bool>(upButtonTopicName, msg => ButtonHandler(UP, msg.Data));
+            ros2Node.CreateSubscription<std_msgs.msg.Bool>(centerButtonTopicName, msg => ButtonHandler(CENTER, msg.Data));
+            ros2Node.CreateSubscription<std_msgs.msg.Bool>(leftButtonTopicName, msg => ButtonHandler(LEFT, msg.Data));
 
             force_pub = ros2Node.CreatePublisher<geometry_msgs.msg.Vector3>(forceTopicName);
             rgb_pub = ros2Node.CreatePublisher<geometry_msgs.msg.Vector3>(rgbTopicName);
@@ -81,7 +81,8 @@ public class FalconNode : MonoBehaviour{
         falconMid.Position = new Vector3((float)x, (float)y, (float)z);
     }
 
-    void ButtonHandler(int button, int value){
+    void ButtonHandler(int button, bool b){
+        var value = b ? 1 : 0;
         if (button == RIGHT && value != lastStatus_right) {
             if (lastStatus_right != -1)
                 falconMid.RightButtonHandler();
