@@ -113,7 +113,7 @@ ros-humble-navigation2 \
 ros-humble-nav2-bringup \
 ```
 
--    Build the colcon workspace:
+-   Build the colcon workspace:
 
 ```bash
 source /opt/ros/humble/setup.bash
@@ -126,7 +126,12 @@ colcon build
 
 _Recommended version:_ **_Windows 11_**
 
-#### 2.2.1. Install ROS 2 Humble:
+#### 2.2.1. Install Git:
+
+-   Visit [git-scm.com/downloads](https://git-scm.com/downloads), download **64-bit Git for Windows Setup** and install it.
+-   Restart the computer.
+
+#### 2.2.2. Install ROS 2 Humble:
 
 -   Visit [docs.ros.org/en/humble](https://docs.ros.org/en/humble/Installation/Windows-Install-Binary.html) and follow the instructions (if the link is no longer available, this repository has a copy of the installation guide [here](https://github.com/jvmoraiscb/rhcr/blob/unity-project/Documentation/ros2-humble-windows.md)).
 -   Open a PowerShell terminal with administrator privileges and unblock the startup script:
@@ -135,18 +140,22 @@ _Recommended version:_ **_Windows 11_**
 Set-ExecutionPolicy Unrestricted ; Unblock-File C:\ros2-windows\local_setup.ps1
 ```
 
-#### 2.2.2. Install Oculus Software:
+#### 2.2.3. Install Oculus Software:
 
 -   Visit [meta.com/quest/setup](https://www.meta.com/quest/setup/), scroll down to the Quest 2 section, click on **Download Software** and install it.
 -   Sign in or create a Meta Account and set up your Quest 2.
 -   Go to Settings -> General and enable **Unknown Sources** and **OpenXR Runtime**.
     ![quest2-settings](/Documentation/images/quest2-config.jpg)
 
-#### 2.2.3. Install Unity:
+#### 2.2.4. Install Unity:
 
 -   Visit [unity.com/download](https://unity.com/download), download and install **Unity Hub**.
 -   Visit [unity.com/releases/editor/archive](https://unity.com/releases/editor/archive) and find **Unity 2020.3.29** version, then click the Unity Hub button and proceed to install the editor.
 -   Choose a folder and clone **this branch** there.
+
+```bash
+git clone -b unity-project https://github.com/jvmoraiscb/rhcr.git
+```
 
 #### 2.2.4 Set the ROS domain ID that you will use across all packages:
 
@@ -172,11 +181,11 @@ source ~/rhcr_ws/install/setup.bash
 ROS_DOMAIN_ID=42 ros2 run ros2-falcon main
 ```
 
--   Open another terminal, source rhcr workspace, set the domain id to the same one used previously and launch rhcr:
+-   Open another terminal, source rhcr workspace, set the domain id to a **DIFFERENT** one from the one used previously **(only at this step)** and launch rhcr:
 
 ```bash
 source ~/rhcr_ws/install/setup.bash
-ROS_DOMAIN_ID=42 ros2 launch rhcr start.launch.py
+ROS_DOMAIN_ID=24 ros2 launch rhcr start.launch.py
 ```
 
 ### 3.2. Running in the Windows environment:
@@ -218,3 +227,6 @@ C:\ros2-windows\local_setup.ps1 ; Start-Process -FilePath '<path\to\Unity.exe>' 
 ```
 
 _Replace **<path\to\Unity.exe>** for the path to the Unity executable, and **<path\to\unity-project\>** for the path to the project folder._
+
+-   Go to **RemoteHapticControlRobot -> RosTcpConnector -> VirtualSensors** and enter the IP address of the Linux environment in the **Ros IP Address** field.
+    ![unity-config](/Documentation/images/unity-config.jpg)
